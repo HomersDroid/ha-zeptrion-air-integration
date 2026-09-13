@@ -23,8 +23,8 @@ from .const import (
     SERVICE_BLIND_RECALL_S2,
     SERVICE_BLIND_RECALL_S3,
     SERVICE_BLIND_RECALL_S4,
-    SERVICE_BLIND_UP_STEP,
-    SERVICE_BLIND_DOWN_STEP,
+    SERVICE_BLIND_STEP_DOWN,
+    SERVICE_BLIND_STEP_UP,
     CONF_STEP_DURATION_MS,
     DEFAULT_STEP_DURATION_MS,
     ZEPTRION_AIR_WEBSOCKET_MESSAGE,
@@ -317,7 +317,7 @@ class ZeptrionAirBlind(CoverEntity):
                 self.async_blind_recall_s4.__name__
             )
             platform.async_register_entity_service(
-                SERVICE_BLIND_UP_STEP,
+                SERVICE_BLIND_STEP_UP,
                 {
                     "duration": vol.All(
                         vol.Coerce(int),
@@ -327,7 +327,7 @@ class ZeptrionAirBlind(CoverEntity):
                 self.async_open_cover_tilt.__name__
             )
             platform.async_register_entity_service(
-                SERVICE_BLIND_DOWN_STEP,
+                SERVICE_BLIND_STEP_DOWN,
                 {
                     "duration": vol.All(
                         vol.Coerce(int),
