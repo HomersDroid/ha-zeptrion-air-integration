@@ -22,6 +22,8 @@ from .const import (
     SERVICE_BLIND_RECALL_S2,
     SERVICE_BLIND_RECALL_S3,
     SERVICE_BLIND_RECALL_S4,
+    SERVICE_BLIND_UP_STEP,
+    SERVICE_BLIND_DOWN_STEP,
     CONF_STEP_DURATION_MS,
     DEFAULT_STEP_DURATION_MS,
     ZEPTRION_AIR_WEBSOCKET_MESSAGE,
@@ -296,6 +298,16 @@ class ZeptrionAirBlind(CoverEntity):
                 SERVICE_BLIND_RECALL_S4,
                 {},
                 self.async_blind_recall_s4.__name__
+            )
+            platform.async_register_entity_service(
+                SERVICE_BLIND_UP_STEP,
+                {},
+                self.async_open_cover_tilt.__name__
+            )
+            platform.async_register_entity_service(
+                SERVICE_BLIND_DOWN_STEP,
+                {},
+                self.async_close_cover_tilt.__name__
             )
         else:
             _LOGGER.warning("Entity platform not available for %s, services not registered.", self.entity_id)

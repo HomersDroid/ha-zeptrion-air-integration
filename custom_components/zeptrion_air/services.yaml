@@ -29,3 +29,19 @@ blind_recall_s4:
     entity:
       integration: zeptrion_air
       domain: cover
+
+blind_up_step:
+  name: Blind Up Step
+  description: Moves the blind up for the configured step duration.
+  target:
+    entity:
+      integration: zeptrion_air
+      domain: cover
+
+blind_down_step:
+  name: Blind Down Step
+  description: Moves the blind down for the configured step duration.
+  target:
+    entity:
+      integration: zeptrion_air
+      domain: cover

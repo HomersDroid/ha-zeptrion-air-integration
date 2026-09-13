@@ -23,7 +23,8 @@ SERVICE_BLIND_RECALL_S1: str = "blind_recall_s1"
 SERVICE_BLIND_RECALL_S2: str = "blind_recall_s2"
 SERVICE_BLIND_RECALL_S3: str = "blind_recall_s3"
 SERVICE_BLIND_RECALL_S4: str = "blind_recall_s4"
-
+SERVICE_BLIND_UP_STEP: str = "blind_up_step"
+SERVICE_BLIND_DOWN_STEP: str = "blind_down_step"
 # Default values
 DEFAULT_STEP_DURATION_MS: int = 250
 
