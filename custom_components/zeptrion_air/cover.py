@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any
+import voluptuous as vol
 
 from homeassistant.components.cover import (
     CoverDeviceClass,
@@ -237,12 +238,20 @@ class ZeptrionAirBlind(CoverEntity):
             _LOGGER.error("Unexpected error while stopping blind %s (Channel %s): %s", self._attr_name, self._channel_id, e)
             raise HomeAssistantError(f"Failed to stop blind {self.name} (Channel {self._channel_id}): An unexpected error occurred. {e}") from e
 
-    async def async_open_cover_tilt(self) -> None:
+    async def async_open_cover_tilt(self, duration: int | None = None) -> None:
         """Tilt the cover open."""
         _LOGGER.debug("Tilting open blind %s (Channel %s)", self._attr_name, self._channel_id)
         self._commanded_action = "tilt_opening"
         try:
-            step_duration_ms = self.config_entry.data.get(CONF_STEP_DURATION_MS, DEFAULT_STEP_DURATION_MS)
+            # If duration was provided, use it; otherwise, fall back to the config entry or default value
+            step_duration_ms = (
+                duration
+                if duration is not None
+                else self.config_entry.data.get(
+                    CONF_STEP_DURATION_MS,
+                    DEFAULT_STEP_DURATION_MS,
+                )
+            )
             await self.config_entry.runtime_data.client.async_channel_move_open(self._channel_id, time_ms=step_duration_ms)
         except (ZeptrionAirApiClientCommunicationError, ZeptrionAirApiClientError) as e:
             _LOGGER.error("API error while tilting open blind %s (Channel %s): %s", self._attr_name, self._channel_id, e)
@@ -251,12 +260,20 @@ class ZeptrionAirBlind(CoverEntity):
             _LOGGER.error("Unexpected error while tilting open blind %s (Channel %s): %s", self._attr_name, self._channel_id, e)
             raise HomeAssistantError(f"Failed to tilt open blind {self.name} (Channel {self._channel_id}): An unexpected error occurred. {e}") from e
 
-    async def async_close_cover_tilt(self) -> None:
+    async def async_close_cover_tilt(self, duration: int | None = None) -> None:
         """Tilt the cover closed."""
         _LOGGER.debug("Tilting close blind %s (Channel %s)", self._attr_name, self._channel_id)
         self._commanded_action = "tilt_closing"
         try:
-            step_duration_ms = self.config_entry.data.get(CONF_STEP_DURATION_MS, DEFAULT_STEP_DURATION_MS)
+            # If duration was provided, use it; otherwise, fall back to the config entry or default value
+            step_duration_ms = (
+                duration
+                if duration is not None
+                else self.config_entry.data.get(
+                    CONF_STEP_DURATION_MS,
+                    DEFAULT_STEP_DURATION_MS,
+                )
+            )
             await self.config_entry.runtime_data.client.async_channel_move_close(self._channel_id, time_ms=step_duration_ms)
         except (ZeptrionAirApiClientCommunicationError, ZeptrionAirApiClientError) as e:
             self._commanded_action = None
@@ -301,13 +318,23 @@ class ZeptrionAirBlind(CoverEntity):
             )
             platform.async_register_entity_service(
                 SERVICE_BLIND_UP_STEP,
-                {},
+                {
+                    "duration": vol.All(
+                        vol.Coerce(int),
+                        vol.Range(min=100, max=32000),
+                    )
+                },
                 self.async_open_cover_tilt.__name__
             )
             platform.async_register_entity_service(
                 SERVICE_BLIND_DOWN_STEP,
-                {},
-                self.async_close_cover_tilt.__name__
+                {
+                    "duration": vol.All(
+                        vol.Coerce(int),
+                        vol.Range(min=100, max=32000),
+                    )
+                },
+                self.async_close_cover_tilt.__name__,
             )
         else:
             _LOGGER.warning("Entity platform not available for %s, services not registered.", self.entity_id)
