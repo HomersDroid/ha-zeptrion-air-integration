@@ -319,7 +319,7 @@ class ZeptrionAirBlind(CoverEntity):
             platform.async_register_entity_service(
                 SERVICE_BLIND_STEP_UP,
                 {
-                    "duration": vol.All(
+                    vol.Optional("duration"): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=100, max=32000),
                     )
@@ -329,7 +329,7 @@ class ZeptrionAirBlind(CoverEntity):
             platform.async_register_entity_service(
                 SERVICE_BLIND_STEP_DOWN,
                 {
-                    "duration": vol.All(
+                    vol.Optional("duration"): vol.All(
                         vol.Coerce(int),
                         vol.Range(min=100, max=32000),
                     )
